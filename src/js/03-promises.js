@@ -3,25 +3,29 @@ const form = document.querySelector('.form'),
   fisrtDelay = document.querySelector('[name="delay"]'),
   delayStep = document.querySelector('[name="step"]'),
   amount = document.querySelector('[name="amount"]'),
-  btnCreate = document.querySelector('button');
+  btnCreate = document.getElementById('submit');
 let promise,
-  intervalCreate = null,
   delayStepValue = 0,
-  cont = 0;
+  cont = 0,
+  timeOutDelay = 0;
 
 form.addEventListener('submit', e => {
   e.preventDefault();
+  cont = 0;
+  timeOutDelay = 0;
+  btnCreate.disabled = true;
   createPromise(parseInt(amount.value), parseInt(fisrtDelay.value));
+  btnCreate.disabled = false;
 });
 
 function createPromise(position, delay) {
   delayStepValue = parseInt(delayStep.value);
-  (intervalCreate = setTimeout(() => {
+  setTimeout(() => {
     timeout(position, delay);
-  }, delay)),
-    setInterval(() => {
-      timeout(position, delay);
-    }, delayStepValue);
+  }, delay);
+  setInterval(() => {
+    timeout(position, delay);
+  }, delayStepValue);
 }
 
 function timeout(position, delay) {
@@ -37,30 +41,34 @@ function timeout(position, delay) {
     });
     promise
       .then(value => {
+        timeOutDelay = delay + delayStepValue * (position - (cont + 1)) + 1000;
         Notify.success(
           `✅ Fulfilled promise ${cont + 1} in ${
             delay + delayStepValue * cont
           }ms`,
           {
             useIcon: false,
-            timeout: delay + delayStepValue * position,
+            timeout: timeOutDelay,
+            pauseOnHover: false,
           }
         );
         cont += 1;
+        timeOutDelay -= delayStepValue;
       })
       .catch(error => {
+        timeOutDelay = delay + delayStepValue * (position - (cont + 1)) + 1000;
         Notify.failure(
           `❌ Rejected promise ${cont + 1} in ${
             delay + delayStepValue * cont
           }ms`,
           {
             useIcon: false,
-            timeout: delay + delayStepValue * position,
+            timeout: timeOutDelay,
+            pauseOnHover: false,
           }
         );
         cont += 1;
+        timeOutDelay -= delayStepValue;
       });
-  } else {
-    clearInterval(intervalCreate);
   }
 }

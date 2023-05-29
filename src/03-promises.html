@@ -11,7 +11,11 @@
         flex-direction: row;
         flex-wrap: wrap;
         gap: 15px;
-        align-items: center;
+        align-items: flex-end;
+      }
+      .form__label {
+        display: flex;
+        flex-direction: column;
       }
       button {
         text-transform: uppercase;
@@ -41,7 +45,7 @@
         Amount
         <input type="number" name="amount" required />
       </label>
-      <button type="submit">Create promises</button>
+      <button type="submit" id="submit">Create promises</button>
     </form>
 
     <script src="js/03-promises.js" type="module"></script>
